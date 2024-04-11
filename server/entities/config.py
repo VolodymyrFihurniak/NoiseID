@@ -24,15 +24,15 @@ class DBModelConfig:
     host: str
     port: int
     user: str
+    name: str
     password: str
-    database: str
 
     def __init__(self, env: OrderedDict, config: dict) -> None:
         self.host = env.get('db_host') or config['db']['host']
         self.port = env.get('db_port') or config['db']['port']
         self.user = env.get('db_user') or config['db']['user']
+        self.name = env.get('db_name') or config['db']['name']
         self.password = env.get('db_password') or config['db']['password']
-        self.database = env.get('db_database') or config['db']['database']
 
 
 class LoggingModelConfig:
