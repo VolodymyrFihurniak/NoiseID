@@ -1,4 +1,4 @@
-name: Pylint
+name: Checking the code in the server directory
 
 on: [push]
 
@@ -10,6 +10,8 @@ jobs:
                 python-version: ["3.11"]
         steps:
             - uses: actions/checkout@v3
+            - name: Change the working directory
+              run: cd server
             - name: List files in current directory
               run: ls -la
             - name: Set up Python ${{ matrix.python-version }}
@@ -22,4 +24,4 @@ jobs:
                   pip install pylint
             - name: Analysing the code with pylint
               run: |
-                  pylint --rcfile=.pylintrc $(git ls-files '*.py')
+                  pylint $(git ls-files '*.py')
