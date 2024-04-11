@@ -27,7 +27,8 @@
 				"ms-python.debugpy",
 				"ms-azuretools.vscode-docker",
 				"YoavBls.pretty-ts-errors",
-				"cweijan.vscode-postgresql-client2"
+				"cweijan.vscode-postgresql-client2",
+				"github.vscode-github-actions"
 			],
 			"settings": {
 				"remote.autoForwardPorts": false
