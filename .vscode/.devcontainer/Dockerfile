@@ -20,7 +20,9 @@ WORKDIR /workspaces/NoiseID/
 
 RUN sh -c "$(wget https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh -O -)"
 RUN git clone https://github.com/zsh-users/zsh-autosuggestions ~/.oh-my-zsh/custom/plugins/zsh-autosuggestions && \
-git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ~/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting && \
-sed "s/plugins=(git)/plugins=(git zsh-autosuggestions zsh-syntax-highlighting)/g" >> ~/.zshrc
+    git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ~/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting && \
+    git clone https://github.com/mafredri/zsh-async ~/.oh-my-zsh/plugins/async && \
+    git clone https://github.com/lukechilds/zsh-nvm ~/.oh-my-zsh/custom/plugins/zsh-nvm && \
+    sed -i 's/plugins=(git)/plugins=(git zsh-autosuggestions zsh-syntax-highlighting async zsh-nvm)/g' ~/.zshrc
 
 ENTRYPOINT /bin/zsh
