@@ -10,10 +10,8 @@ jobs:
                 python-version: ["3.11"]
         steps:
             - uses: actions/checkout@v3
-            - name: Change the working directory
-              run: cd server
-            - name: List files in current directory
-              run: ls -la
+            - name: List files in server directory
+              run: ls -la server
             - name: Set up Python ${{ matrix.python-version }}
               uses: actions/setup-python@v3
               with:
@@ -21,7 +19,7 @@ jobs:
             - name: Install dependencies
               run: |
                   python -m pip install --upgrade pip
-                  pip install pylint
+                  pip install -r server/requirements.txt
             - name: Analysing the code with pylint
               run: |
                   pylint $(git ls-files '*.py')
