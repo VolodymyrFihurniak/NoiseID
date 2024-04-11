@@ -12,7 +12,7 @@ jobs:
             - uses: actions/checkout@v3
             - name: List files in current directory
               working-directory: server
-              run: ls -la server
+              run: ls -la .
             - name: Set up Python ${{ matrix.python-version }}
               uses: actions/setup-python@v3
               with:
