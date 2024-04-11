@@ -1,0 +1,15 @@
+app:
+    host: 0.0.0.0
+    port: 3000
+    use_https:
+    ssl_key_path: ""
+    ssl_cert_path: ""
+db:
+    host: 0.0.0.0
+    port: 3306
+    user: test
+    name: test
+    password: test
+logging:
+    config_path: configs/logging.conf
+    log_dir: logs
