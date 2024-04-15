@@ -1,0 +1,13 @@
+app:
+    server_domain: localhost
+    server_port: 3000
+styles:
+    root_frame:
+        width: 800
+        height: 600
+    main_frame:
+        width: 800
+        height: 600
+logging:
+    config_path: configs/logging.conf
+    log_dir: logs
