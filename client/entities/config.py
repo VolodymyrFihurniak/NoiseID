@@ -13,6 +13,23 @@ class AppModelConfig:
             'app_server_port') or config['app']['server_port']
 
 
+class MicrophoneModelConfig:
+    rate: int
+    frames_per_buffer: int
+    duration: int
+    max_signals: int
+
+    def __init__(self, env: OrderedDict, config: dict) -> None:
+        self.rate = env.get(
+            'microphone_rate') or config['microphone']['rate']
+        self.frames_per_buffer = env.get(
+            'microphone_frames_per_buffer') or config['microphone']['frames_per_buffer']
+        self.duration = env.get(
+            'microphone_duration') or config['microphone']['duration']
+        self.max_signals = env.get(
+            'microphone_max_signals') or config['microphone']['max_signals']
+
+
 class StylesModelConfig:
     root_frame: dict
     main_frame: dict
@@ -36,9 +53,13 @@ class LoggingModelConfig:
 
 
 class Config:
+    app: AppModelConfig = None
+    microphone: MicrophoneModelConfig = None
     styles: StylesModelConfig = None
     logging: LoggingModelConfig = None
 
     def __init__(self, env: OrderedDict, config: dict) -> None:
+        self.app = AppModelConfig(env, config)
+        self.microphone = MicrophoneModelConfig(env, config)
         self.styles = StylesModelConfig(env, config)
         self.logging = LoggingModelConfig(env, config)
