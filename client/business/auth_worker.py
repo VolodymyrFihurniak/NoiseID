@@ -13,7 +13,5 @@ class AuthWorker:
 
     def login(self, username: str, password: str, microphone: Microphone) -> json.JSONEncoder:
         user = UserDTO(username, password, [])
-        self.auth_service.login(microphone)
-        return json.JSONEncoder().encode({
-            "message": "Success",
-        })
+        result = self.auth_service.login(user, microphone)
+        return {'message': result}

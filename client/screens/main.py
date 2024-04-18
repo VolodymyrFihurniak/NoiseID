@@ -38,6 +38,8 @@ class MainScreen():
         username_entry = ttk.Entry(frame, width=37)
         password_label = ttk.Label(frame, text="Password:")
         password_entry = ttk.Entry(frame, width=37, show='*')
+        process_information_area = ttk.Label(
+            frame, text="Status authentication: ")
 
         def send_process():
             contoller = AuthController(self.logging, self.config).login(
@@ -45,7 +47,8 @@ class MainScreen():
                 password_entry.get(),
                 Microphone(mics_list.current(), mics_list.get())
             )
-            print(contoller)
+            process_information_area.config(
+                text=f"Status authentication: {contoller['message']}")
 
         process_button = ttk.Button(
             frame,
@@ -59,6 +62,7 @@ class MainScreen():
         username_entry.grid(row=1, column=1)
         password_label.grid(row=2, column=0)
         password_entry.grid(row=2, column=1)
+        process_information_area.grid(row=4, column=0, columnspan=2)
         process_button.grid(row=3, column=0, columnspan=2)
 
     def render_screen(self):
