@@ -1,5 +1,5 @@
 {
-	"name": "NoiseID",
+	"name": "NoiseID Dev Container",
 	"build": {
 		"dockerfile": "Dockerfile",
 		"args": {
