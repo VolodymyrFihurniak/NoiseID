@@ -1,4 +1,10 @@
 {
+    "[sql]": {
+        "editor.formatOnSave": true,
+        "editor.defaultFormatter": "ReneSaarsoo.sql-formatter-vsc",
+    },
+    "SQL-Formatter-VSCode.dialect": "postgresql",
     "editor.formatOnSave": true,
-    "editor.defaultFormatter": "ms-python.autopep8",
+    "editor.defaultFormatter": "charliermarsh.ruff",
+    "editor.rulers": [80],
 }
