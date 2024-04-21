@@ -27,11 +27,15 @@ def upgrade() -> None:
 		sa.Column('id', sa.Integer(), nullable=False),
 		sa.Column('username', sa.String(), nullable=True),
 		sa.Column('password', sa.String(), nullable=True),
-		sa.Column('data', sa.ARRAY(sa.String), nullable=True),
+		sa.Column(
+			'data',
+			sa.ARRAY(sa.Integer),
+			nullable=True,
+		),
 		sa.PrimaryKeyConstraint('id'),
 	)
 	op.create_table(
-		'users',
+		'devices',
 		sa.Column('id', sa.Integer(), nullable=False),
 		sa.Column('name', sa.String(), nullable=True),
 		sa.Column('authentification', sa.Integer(), nullable=True),

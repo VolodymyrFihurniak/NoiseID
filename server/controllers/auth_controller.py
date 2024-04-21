@@ -1,6 +1,6 @@
 import json
 
-from fastapi import UploadFile
+import numpy
 from psycopg2 import pool
 
 from app.sql_manager import SQLManager
@@ -29,16 +29,14 @@ class AuthController(BaseController):
 			AuthRepository(self.db_pool, self.sql_manager, self.logging)
 		)
 
-	def register(
-		self, user: Authentification, data: UploadFile
-	) -> json.JSONEncoder:
+	def register(self, user: Authentification, data: bytes) -> json.JSONEncoder:
 		auth_worker = self.build_auth_worker()
-		build_user = UserMapper().to_dto(user, data)
-		return auth_worker.register(build_user)
+		data = numpy.frombuffer(data, dtype=numpy.int16)
+		build_user = UserMapper().to_dto(user, numpy.array(data).tolist())
+		return auth_worker.process_register(build_user)
 
-	def login(
-		self, user: Authentification, data: UploadFile
-	) -> json.JSONEncoder:
+	def login(self, user: Authentification, data: bytes) -> json.JSONEncoder:
 		auth_worker = self.build_auth_worker()
-		build_user = UserMapper().to_dto(user, data)
+		data = numpy.frombuffer(data, dtype=numpy.int16)
+		build_user = UserMapper().to_dto(user, numpy.array(data).tolist())
 		return auth_worker.process_login(build_user)

@@ -17,28 +17,30 @@ class AuthRepository(IAuthDatabase):
 	def get_user(self, username: str) -> Annotated[UserDTO, None]:
 		with self.db_pool.getconn() as conn:
 			with conn.cursor() as cur:
-				self.logging.info(f'Getting user {username}')
-				cur.execute(self.sql_manager.get_user, (username,))
+				self.logging.data.info(f'Getting user {username}')
+				cur.execute(self.sql_manager.get_query('get_user'), (username,))
 				user = cur.fetchone()
 				if user:
-					return UserDTO(user[0], user[1], user[2])
+					return UserDTO(user[1], user[2], user[3])
 				return None
 
 	def add_user(self, user: UserDTO):
 		with self.db_pool.getconn() as conn:
 			with conn.cursor() as cur:
-				self.logging.info(f'Adding user {user.username}')
+				self.logging.data.info(f'Adding user {user.username}')
 				cur.execute(
-					self.sql_manager.add_user,
+					self.sql_manager.get_query('add_user'),
 					(user.username, user.password, user.data),
 				)
 				conn.commit()
-				self.logging.info(f'User {user.username} added')
+				self.logging.data.info(f'User {user.username} added')
 
 	def remove_user(self, username: str):
 		with self.db_pool.getconn() as conn:
 			with conn.cursor() as cur:
 				self.logging.info(f'Removing user {username}')
-				cur.execute(self.sql_manager.remove_user, (username,))
+				cur.execute(
+					self.sql_manager.get_query('remole_user'), (username,)
+				)
 				conn.commit()
-				self.logging.info(f'User {username} removed')
+				self.logging.data.info(f'User {username} removed')
