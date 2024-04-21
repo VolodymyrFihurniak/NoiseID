@@ -1,5 +1,4 @@
 from os import listdir
-from os import getcwd
 from typing import Annotated
 
 from utils.logger import Logger
