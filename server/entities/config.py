@@ -30,6 +30,8 @@ class DBModelConfig:
 	user: str
 	name: str
 	password: str
+	min_conn: int
+	max_conn: int
 
 	def __init__(self, env: OrderedDict, config: dict) -> None:
 		self.host = env.get('db_host') or config['db']['host']
@@ -37,6 +39,12 @@ class DBModelConfig:
 		self.user = env.get('db_user') or config['db']['user']
 		self.name = env.get('db_name') or config['db']['name']
 		self.password = env.get('db_password') or config['db']['password']
+		self.min_conn = int(env.get('db_min_conn')) or int(
+			config['db']['min_conn']
+		)
+		self.max_conn = int(env.get('db_max_conn')) or int(
+			config['db']['max_conn']
+		)
 
 
 class LoggingModelConfig:

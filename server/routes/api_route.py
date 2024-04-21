@@ -1,7 +1,9 @@
 from fastapi import APIRouter
+from psycopg2 import pool
 
 from app.sql_manager import SQLManager
-from routes.base_route import BaseRoute
+from entities.config import Config
+from routes import BaseRoute
 from utils.logger import Logger
 
 
@@ -10,12 +12,12 @@ class ApiRoute(BaseRoute):
 		self,
 		router: APIRouter,
 		name: str,
-		config,
-		db,
+		config: Config,
+		db_pool: pool,
 		sql_manager: SQLManager,
 		logging: Logger,
 	) -> None:
-		super().__init__(router, name, config, db, sql_manager, logging)
+		super().__init__(router, name, config, db_pool, sql_manager, logging)
 
 	def configure_routes(self):
 		api_uri = '/api'
