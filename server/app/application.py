@@ -2,12 +2,14 @@ from collections import OrderedDict
 
 from dotenv import dotenv_values
 from fastapi import APIRouter, FastAPI
+from psycopg2 import pool
 from uvicorn import run as server_run
 from yaml import Loader, load
 
 from app.sql_manager import SQLManager
 from entities.config import Config
-from routes import ApiRoute, AuthRoute
+from routes.api_route import ApiRoute
+from routes.auth_route import AuthRoute
 from utils.logger import Logger
 
 
@@ -16,6 +18,7 @@ class App:
 	config_env: OrderedDict = {}
 	config_yaml: dict = {}
 	config: Config = None
+	db_pool: pool = None
 	sql_manager: SQLManager = None
 	logging: Logger = None
 	routes: APIRouter = []
@@ -26,6 +29,15 @@ class App:
 		with open('configs/config.yaml', encoding='utf-8') as file:
 			self.config_yaml = load(file, Loader=Loader)
 		self.config = Config(self.config_env, self.config_yaml)
+		self.db_pool = pool.SimpleConnectionPool(
+			self.config.db.min_conn,
+			self.config.db.max_conn,
+			host=self.config.db.host,
+			port=self.config.db.port,
+			user=self.config.db.user,
+			password=self.config.db.password,
+			database=self.config.db.name,
+		)
 		self.logging = Logger(self.config)
 		self.sql_manager = SQLManager(self.logging)
 		self.router = APIRouter()
@@ -37,7 +49,7 @@ class App:
 				self.router,
 				'api',
 				self.config,
-				None,
+				self.db_pool,
 				self.sql_manager,
 				self.logging,
 			)
@@ -47,7 +59,7 @@ class App:
 				self.router,
 				'auth',
 				self.config,
-				None,
+				self.db_pool,
 				self.sql_manager,
 				self.logging,
 			)

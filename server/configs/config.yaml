@@ -10,6 +10,8 @@ db:
     user: test
     name: test
     password: test
+    min_connections: 1
+    max_connections: 10
 logging:
     config_path: configs/logging.conf
     log_dir: logs
