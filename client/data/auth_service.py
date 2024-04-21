@@ -1,77 +1,3 @@
-# import pyaudio
-# import time
-# import pandas as pd
-# import numpy as np
-# import matplotlib.pyplot as plt
-# # from matplotlib.animation import FuncAnimation
-# from statsmodels.tsa.stattools import acf
-# from core.microphone_recorder import Microphone, MicrophoneRecorder
-
-# device = Microphone(2, 'Microphone (Line In Audio Device)')
-# recorder = MicrophoneRecorder(device)
-
-# # Record and plot voice
-
-# rate = 44100
-# frames_per_buffer = 2048
-# duration = 1
-
-# # audio = recorder.record(rate, frames_per_buffer, duration)
-# # audio = np.frombuffer(audio, dtype=np.int16)
-
-# max_signals = 5
-# signals = []
-
-
-# for i in range(max_signals):
-#     audio = recorder.record(rate, frames_per_buffer, duration)
-#     # strip first 44100 samples
-#     audio = audio[44100:]
-#     audio = np.frombuffer(audio, dtype=np.int16)
-#     signals.append(audio)
-
-# signals = np.array(signals)
-
-# # The difference between the distribution of electrical noise voltage amplitudes and the Gaussian distribution is characterized by the values of asymmetry (skew(x)) and kurtosis (kurt(x)), which are calculated according to the formulas:
-
-# for i, signal in enumerate(signals):
-#     print(f'Signal {i}')
-#     print(f'Skewness: {pd.Series(signal).skew()}')
-#     print(f'Kurtosis: {pd.Series(signal).kurtosis()}')
-
-
-# #  Perform linear autocorrelation
-# autocorrelations = []
-# for i, signal in enumerate(signals):
-#     autocorrelation = acf(signal, nlags=10000)
-#     autocorrelations.append(autocorrelation)
-#     # plt.plot(autocorrelations[i][0:10000])
-#     # plt.title(f'Signal {i} Autocorrelation')
-#     # plt.show()
-
-# # Create a bitmap
-# bitmaps = []
-# for i, autocorrelation in enumerate(autocorrelations):
-#     bitmap = np.where(autocorrelation > 0.5, 1, 0)
-#     bitmaps.append(bitmap)
-#     # plt.plot(bitmaps[i][0:10000])
-#     # plt.title(f'Signal {i} Bitmap')
-#     # plt.show()
-
-# # Compare the bit patterns and find the Hamming distance
-
-# for i in range(max_signals):
-#     for j in range(i + 1, max_signals):
-#         hamming_distance = np.sum(bitmaps[i] != bitmaps[j])
-#         print(f'Hamming distance between signal {
-#               i} and signal {j}: {hamming_distance}')
-
-# # Output device
-
-# # for i in range(pyaudio.PyAudio().get_device_count()):
-# #     device = pyaudio.PyAudio().get_device_info_by_index(i)
-# #     print(f'Index: {i}, Name: {device['name']}')
-
 import pandas as pd
 import numpy as np
 import requests as req
@@ -142,6 +68,10 @@ class AuthService:
             bitmap = self.create_bitmap(autocorrelation)
             bitmaps.append(bitmap)
 
+        if not signals:
+            self.logging.business.error('No signals to process.')
+            return 'Failed'
+
         sorted_signals = sorted(
             signals, key=lambda signal: pd.Series(signal).skew())
 
@@ -152,7 +82,17 @@ class AuthService:
             self.logging.business.info(
                 f'Kurtosis: {pd.Series(signal).kurtosis()}')
             self.logging.business.info('')
-        user.data = np.array(sorted_signals[0], dtype=np.int16).tobytes()
+
+        for i in range(accepted_signals):
+            for j in range(i + 1, accepted_signals):
+                hamming_distance = self.calculate_hamming_distance(
+                    bitmaps[i], bitmaps[j])
+                self.logging.business.info(
+                    f'Hamming distance between signal {i} and signal {j}: {hamming_distance}')
+
+        representative_bitmap = self.create_bitmap(
+            self.calculate_autocorrelation(sorted_signals[0], 10000))
+        user.data = np.array(representative_bitmap, dtype=np.int16).tobytes()
         stream_data = {'stream': user.data}
         process = req.post(
             f'http://{self.config.app.server_domain}:'
@@ -161,4 +101,4 @@ class AuthService:
             files=stream_data,
             timeout=60
         )
-        return 'Success' if process.status_code == 200 else 'Failed'
+        return process.json()['message']
