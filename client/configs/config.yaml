@@ -1,0 +1,18 @@
+app:
+    server_domain: localhost
+    server_port: 3000
+microphone:
+    rate: 44100
+    frames_per_buffer: 2048
+    duration: 3
+    max_signals: 5
+styles:
+    root_frame:
+        width: 800
+        height: 600
+    main_frame:
+        width: 800
+        height: 600
+logging:
+    config_path: configs/logging.conf
+    log_dir: logs
