@@ -18,6 +18,7 @@ class ApiRoute(BaseRoute):
 		logging: Logger,
 	) -> None:
 		super().__init__(router, name, config, db_pool, sql_manager, logging)
+		self.logging.server.info('ApiRoute initialized')
 
 	def configure_routes(self):
 		api_uri = '/api'
